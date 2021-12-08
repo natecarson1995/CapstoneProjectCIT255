@@ -1,0 +1,53 @@
+﻿@model CapstoneProject.ViewModels.PostIndexResult
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<form class="link-collection" method="get" asp-action="Index">
+    <input asp-for="@Model.SearchQuery" type="text" placeholder="Search here" />
+    <select asp-for="@Model.SelectedCategory" asp-items="@Model.AllCategories.Select(category => new SelectListItem(category.Name, category.ID.ToString(), Model.SelectedCategory != null && category.ID == Model.SelectedCategory.ID))">
+        <option value="">None</option>
+    </select>
+    <input type="submit" value="Submit">
+</form>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <a asp-action="Index" asp-route-sortProperty="Title" asp-route-isSortAscending="@(Model.SortProperty=="Title" && !Model.IsSortAscending)">Title</a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortProperty="Description" asp-route-isSortAscending="@(Model.SortProperty=="Description" && !Model.IsSortAscending)">Description</a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortProperty="Category" asp-route-isSortAscending="@(Model.SortProperty=="Category" && !Model.IsSortAscending)">Category</a>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.Posts) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Model.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AdditionalText)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PostCategory.Name)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

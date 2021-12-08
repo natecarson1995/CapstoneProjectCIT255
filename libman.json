@@ -1,0 +1,10 @@
+{
+  "version": "1.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "library": "three.js@r128",
+      "destination": "wwwroot/js/three.js/"
+    }
+  ]
+}

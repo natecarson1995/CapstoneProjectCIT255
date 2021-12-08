@@ -1,0 +1,25 @@
+﻿@model CapstoneProject.Models.Post
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = null;
+}
+<html>
+<head>
+    <style>
+        *{
+            margin:0px;
+            padding:0px;
+        }
+    </style>
+</head>
+<body>
+    <script>
+    function getModelURL(id) {
+        return `/Posts/ModelData/${id}`;
+    }
+    var modelURL = getModelURL(@Html.DisplayFor(model=>model.ID));
+    </script>
+    <script type="module" src="~/js/LoadModel.js" asp-append-version="true"></script>
+</body>
+</html>
