@@ -1,4 +1,4 @@
-﻿@model CapstoneProject.Models.Post
+﻿@model CapstoneProject.ViewModels.PostCreateResult
 
 @{
     ViewData["Title"] = "Create";
@@ -13,17 +13,21 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Model.ModelData" class="control-label"></label>
-                <textarea asp-for="Model.ModelData" class="form-control"></textarea>
+                <label asp-for="ModelData" class="control-label"></label>
+                <textarea asp-for="ModelData" class="form-control"></textarea>
             </div>
             <div class="form-group">
-                <label asp-for="Model.Description" class="control-label"></label>
-                <input asp-for="Model.Description" class="form-control" />
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
             </div>
             <div class="form-group">
                 <label asp-for="AdditionalText" class="control-label"></label>
                 <input asp-for="AdditionalText" class="form-control" />
                 <span asp-validation-for="AdditionalText" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CategoryID" class="control-label"></label>
+                <select asp-for="CategoryID" asp-items="@Model.AllCategories.Select(category => new SelectListItem(category.Name, category.ID.ToString()))"></select>
             </div>
             <div class="form-group form-check">
                 <label class="form-check-label">

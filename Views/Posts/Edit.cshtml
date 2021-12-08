@@ -1,4 +1,4 @@
-﻿@model CapstoneProject.Models.Post
+﻿@model CapstoneProject.ViewModels.PostEditResult
 
 @{
     ViewData["Title"] = "Edit";
@@ -15,8 +15,8 @@
             <input type="hidden" asp-for="ID" />
             <input type="hidden" asp-for="ModelID" />
             <div class="form-group">
-                <label asp-for="Model.Description" class="control-label"></label>
-                <input asp-for="Model.Description" class="form-control" />
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
             </div>
             <div class="form-group">
                 <label asp-for="AdditionalText" class="control-label"></label>
@@ -24,12 +24,16 @@
                 <span asp-validation-for="AdditionalText" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Model.ModelData" class="control-label"></label>
-                <textarea cols=80 rows=20 asp-for="Model.ModelData"></textarea>
+                <label asp-for="ModelData" class="control-label"></label>
+                <textarea cols=80 rows=20 asp-for="ModelData"></textarea>
+            </div>
+            <div class="form-group">
+                <label asp-for="CategoryID" class="control-label"></label>
+                <select asp-for="@Model.CategoryID" asp-items="@Model.AllCategories.Select(category => new SelectListItem(category.Name, category.ID.ToString()))"></select>
             </div>
             <div class="form-group form-check">
                 <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsPrivatePost"/> @Html.DisplayNameFor(model => model.IsPrivatePost)
+                    <input class="form-check-input" asp-for="IsPrivatePost" /> @Html.DisplayNameFor(model => model.IsPrivatePost)
                 </label>
             </div>
             <div class="form-group">

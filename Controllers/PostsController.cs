@@ -135,9 +135,13 @@ namespace CapstoneProject.Controllers
         }
 
         // GET: Posts/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
+            PostCreateResult createViewModel = new PostCreateResult
+            {
+                AllCategories = await _context.PostCategories.ToListAsync(),
+            };
+            return View(createViewModel);
         }
 
         // POST: Posts/Create
@@ -145,19 +149,19 @@ namespace CapstoneProject.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("AdditionalText,IsPrivatePost")] Post post, [Bind("Description,ModelData")] Model model)
+        public async Task<IActionResult> Create([Bind("ModelData,Description,CategoryID,AdditionalText,IsPrivatePost")] PostCreateResult postViewModel)
         {
             if (ModelState.IsValid)
             {
+                var model = new Model { Description = postViewModel.Description, ModelData = postViewModel.ModelData };
                 _context.Add(model);
                 await _context.SaveChangesAsync();
-                post.ModelID = model.ID;
+                var post = new Post { ModelID = model.ID, AdditionalText = postViewModel.AdditionalText, PostCategoryID = postViewModel.CategoryID, IsPrivatePost = postViewModel.IsPrivatePost };
                 _context.Add(post);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            post.Model = model;
-            return View(post);
+            return View(postViewModel);
         }
 
         // GET: Posts/Edit/5
@@ -175,7 +179,18 @@ namespace CapstoneProject.Controllers
             {
                 return NotFound();
             }
-            return View(post);
+
+            PostEditResult editViewModel = new PostEditResult
+            {
+                AllCategories = await _context.PostCategories.ToListAsync(),
+                ID=post.ID,
+                ModelID=post.ModelID,
+                ModelData=post.Model.ModelData,
+                AdditionalText=post.AdditionalText,
+                Description=post.Model.Description,
+                IsPrivatePost=post.IsPrivatePost
+            };
+            return View(editViewModel);
         }
 
         // POST: Posts/Edit/5
@@ -183,9 +198,9 @@ namespace CapstoneProject.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,ModelID,AdditionalText,IsPrivatePost")] Post post, [Bind("Description,ModelData")] Model model)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,ModelID,ModelData,Description,AdditionalText,IsPrivatePost,CategoryID")] PostEditResult postViewModel)
         {
-            if (id != post.ID)
+            if (id != postViewModel.ID)
             {
                 return NotFound();
             }
@@ -194,14 +209,23 @@ namespace CapstoneProject.Controllers
             {
                 try
                 {
-                    model.ID = post.ModelID;
-                    _context.Update(model);
-                    _context.Update(post);
+                    var modelToUpdate = await _context.Models.FirstOrDefaultAsync(model => model.ID == postViewModel.ModelID);
+                    modelToUpdate.ModelData = postViewModel.ModelData;
+                    modelToUpdate.Description = postViewModel.Description;
+                    _context.Update(modelToUpdate);
                     await _context.SaveChangesAsync();
+
+                    var postToUpdate = await _context.Posts.FirstOrDefaultAsync(post => post.ID == postViewModel.ID);
+                    postToUpdate.AdditionalText = postViewModel.AdditionalText;
+                    postToUpdate.PostCategoryID = postViewModel.CategoryID;
+                    postToUpdate.IsPrivatePost = postViewModel.IsPrivatePost;
+                    _context.Update(postToUpdate);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!PostExists(post.ID))
+                    if (!PostExists(postViewModel.ID))
                     {
                         return NotFound();
                     }
@@ -212,8 +236,7 @@ namespace CapstoneProject.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            post.Model = model;
-            return View(post);
+            return View(postViewModel);
         }
 
         // GET: Posts/Delete/5
