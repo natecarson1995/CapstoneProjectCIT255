@@ -28,7 +28,7 @@
                 <textarea cols=80 rows=20 asp-for="ModelData"></textarea>
             </div>
             <div class="form-group">
-                <label asp-for="CategoryID" class="control-label"></label>
+                <label class="control-label">Category</label>
                 <select asp-for="@Model.CategoryID" asp-items="@Model.AllCategories.Select(category => new SelectListItem(category.Name, category.ID.ToString()))"></select>
             </div>
             <div class="form-group form-check">
